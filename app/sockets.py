@@ -1,12 +1,12 @@
 import os
 
 import socketio
+from fastapi import HTTPException
 from jwt import PyJWTError
-from sqlalchemy import select
 
+from app.api.dependencies import _get_user_from_token
 from app.core.config import cors_origins
 from app.core.security import decode_app_token
-from app.models.user_model import User
 from db.database import SessionLocal
 
 
@@ -38,11 +38,10 @@ async def connect(sid, environ, auth):
     if payload.get("type") != "access":
         return False
 
-    async with SessionLocal() as db:
-        result = await db.execute(select(User).where(User.email == payload.get("sub")))
-        user = result.scalar_one_or_none()
-
-    if user is None:
+    try:
+        async with SessionLocal() as db:
+            user = await _get_user_from_token(token, db)
+    except (HTTPException, PyJWTError):
         return False
 
     await sio.enter_room(sid, f"user_{user.id}")

@@ -32,6 +32,9 @@ services:
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     restart: always
+    ports:
+      - "${RABBITMQ_PORT:-5673}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 5s
@@ -47,15 +50,17 @@ services:
       - test_runner_venv:/code/.venv
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       rabbitmq:
         condition: service_healthy
     env_file:
       - .env
     environment:
       - TESTING=False
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_SOCKETIO_URL=amqp://guest:guest@rabbitmq:5672/
       - REMINDER_SCHEDULER_ENABLED=false
 
   migrate:
@@ -66,8 +71,8 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    profiles:
-      - tools
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
 
   reminder_scheduler:
     build: .
@@ -77,15 +82,17 @@ services:
     healthcheck:
       disable: true
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       rabbitmq:
         condition: service_healthy
     env_file:
       - .env
     environment:
       - TESTING=False
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_SOCKETIO_URL=amqp://guest:guest@rabbitmq:5672/
 
   reminder_worker:
     build: .
@@ -95,15 +102,17 @@ services:
     healthcheck:
       disable: true
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       rabbitmq:
         condition: service_healthy
     env_file:
       - .env
     environment:
       - TESTING=False
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_SOCKETIO_URL=amqp://guest:guest@rabbitmq:5672/
 
   test_runner:
     build:

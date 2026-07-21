@@ -2,6 +2,11 @@ import os
 
 
 TRUTHY = {"1", "true", "yes"}
+DEVELOPMENT_CORS_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
 
 def is_production() -> bool:
@@ -11,7 +16,7 @@ def is_production() -> bool:
 def cors_origins() -> list[str]:
     raw = os.getenv("CORS_ORIGINS", "")
     if not raw:
-        return [] if is_production() else ["*"]
+        return [] if is_production() else DEVELOPMENT_CORS_ORIGINS.copy()
     return [origin.strip() for origin in raw.split(",") if origin.strip()]
 
 

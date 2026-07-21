@@ -76,6 +76,7 @@ async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers,
+    credentials: "include",
   });
   const text = await response.text();
   let payload = {};
@@ -1248,14 +1249,20 @@ async function loadStats() {
   log("Статистика загружена", data);
 }
 
-function logout() {
-  token = "";
-  localStorage.removeItem("pingme_token");
-  if (socket) socket.disconnect();
-  setPill("socketStatus", "Realtime выключен", "muted");
-  $("authOutput").textContent = "Вы вышли из аккаунта.";
-  updateAuthStatus();
-  log("Выход выполнен");
+async function logout() {
+  try {
+    if (token) {
+      await request("/auth/logout", { method: "POST" });
+    }
+  } finally {
+    token = "";
+    localStorage.removeItem("pingme_token");
+    if (socket) socket.disconnect();
+    setPill("socketStatus", "Realtime выключен", "muted");
+    $("authOutput").textContent = "Вы вышли из аккаунта.";
+    updateAuthStatus();
+    log("Выход выполнен");
+  }
 }
 
 function escapeHtml(value) {

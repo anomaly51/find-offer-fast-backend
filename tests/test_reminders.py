@@ -268,6 +268,29 @@ async def test_due_in_seconds_delays_current_reminder(async_client, db_session):
 
 
 @pytest.mark.asyncio
+async def test_delivered_pending_reminder_stays_current_until_acknowledged(
+    async_client, db_session
+):
+    session = await reg_and_login(async_client)
+    created = await async_client.post(
+        "/reminders",
+        json={"title": "Track guitar"},
+        headers=session["headers"],
+    )
+    reminder_id = created.json()["id"]
+
+    reminder = (
+        await db_session.execute(select(Reminder).where(Reminder.id == reminder_id))
+    ).scalar_one()
+    reminder.last_delivered_at = datetime.now(UTC)
+    reminder.next_run_at = datetime.now(UTC) + timedelta(hours=1)
+    await db_session.commit()
+
+    current = await async_client.get("/reminders/current", headers=session["headers"])
+    assert [item["id"] for item in current.json()] == [reminder_id]
+
+
+@pytest.mark.asyncio
 async def test_list_reminders_filters_by_status_and_form(async_client, disable_rabbitmq_publish):
     session = await reg_and_login(async_client)
     form = await async_client.post(

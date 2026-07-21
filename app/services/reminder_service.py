@@ -5,7 +5,7 @@ from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from fastapi import Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -52,13 +52,24 @@ class ReminderService:
         return reminder
 
     async def get_current_reminders(self, user: User) -> list[Reminder]:
-        return await self.list_reminders(
-            user,
-            statuses=ACTIVE_REMINDER_STATUSES,
-            due_only=True,
-            limit=100,
-            offset=0,
+        now = datetime.now(UTC)
+        query = (
+            select(Reminder)
+            .where(
+                Reminder.user_id == user.id,
+                or_(
+                    and_(
+                        Reminder.status == "pending",
+                        or_(Reminder.next_run_at <= now, Reminder.last_delivered_at.is_not(None)),
+                    ),
+                    and_(Reminder.status == "skipped", Reminder.next_run_at <= now),
+                ),
+            )
+            .order_by(Reminder.next_run_at.desc(), Reminder.id.desc())
+            .limit(100)
         )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     async def list_reminders(
         self,

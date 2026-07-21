@@ -12,7 +12,8 @@ Socket.IO connections must pass the same access token in auth:
 }
 ```
 
-The backend joins the socket to `user_<id>` after validating the token.
+The backend joins the socket to `user_<id>` after applying the same access-token,
+active-session, revocation, password-change, and email-confirmation checks as REST.
 
 ## Reminder events
 
@@ -41,6 +42,9 @@ After showing it, the frontend should call one of:
 - `POST /reminders/{id}/cancel`
 
 If the app was offline, use `GET /reminders/current` on startup to fetch missed due reminders.
+A delivered `pending` reminder remains current until it is completed or cancelled, even
+while its delivery retry is scheduled for the future. A user-skipped reminder becomes
+current again only when its skip delay expires.
 
 ## Forms
 
@@ -162,7 +166,8 @@ through `PUSH_WEBHOOK_URL` if configured.
 ## Health and Operations
 
 - `GET /health/live`
-- `GET /health/ready`
+- `GET /health/ready` (PostgreSQL must be on the current Alembic head and RabbitMQ
+  must be reachable; otherwise it returns `503`)
 - `GET /admin/overview`
 - `GET /admin/users`
 - `GET /admin/reminders/failed`
