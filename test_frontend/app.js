@@ -1,6 +1,6 @@
 const API_BASE = "http://localhost:8000";
 
-let token = localStorage.getItem("pingme_token") || "";
+let token = localStorage.getItem("find_offer_fast_token") || "";
 let forms = [];
 let formGroups = [];
 let reminders = [];
@@ -158,7 +158,7 @@ async function login() {
   });
 
   token = data.access_token;
-  localStorage.setItem("pingme_token", token);
+  localStorage.setItem("find_offer_fast_token", token);
   showOutput("authOutput", data);
   updateAuthStatus();
   connectSocket();
@@ -1256,7 +1256,7 @@ async function logout() {
     }
   } finally {
     token = "";
-    localStorage.removeItem("pingme_token");
+    localStorage.removeItem("find_offer_fast_token");
     if (socket) socket.disconnect();
     setPill("socketStatus", "Realtime выключен", "muted");
     $("authOutput").textContent = "Вы вышли из аккаунта.";

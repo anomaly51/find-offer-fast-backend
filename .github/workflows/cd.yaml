@@ -8,12 +8,12 @@ on:
 
 permissions:
   contents: read
+  packages: write
+  id-token: write
 
 jobs:
   deploy:
-    uses: anomaly51/github-actions-toolkit/.github/workflows/harbor-argocd-app.yml@main
+    uses: anomaly51/general-1-argocd/.github/workflows/build-and-stage.yaml@main
     with:
-      app-name: pingme-backend
-      notification-title: Find Offer Fast Backend
-      image-repository: harbor.api-api-api.com/pingme/backend
-    secrets: inherit
+      application: find-offer-fast
+      components: '[{"key":"images.api"}]'

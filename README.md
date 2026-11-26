@@ -159,4 +159,6 @@ poetry run python scripts/export_openapi.py
 
 - Backend: https://github.com/anomaly51/find-offer-fast-backend
 - Android: https://github.com/anomaly51/find-offer-fast-android
-- Existing deployment IDs (`pingme-backend`), registry paths, secret references, domains, and browser token storage keys are retained for compatibility with the running installation.
+- Public API: https://find-offer-fast.api-api-api.com
+- Argo CD application: `apps-find-offer-fast` in `general-1`
+- Deployment configuration: `apps/find-offer-fast` in `anomaly51/general-1-argocd`
