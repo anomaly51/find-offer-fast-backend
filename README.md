@@ -1,6 +1,6 @@
-# Ping Me
+# Find Offer Fast
 
-MVP backend for configurable forms, grouped submissions, answers, scheduled reminders,
+Backend for group learning in IT, from learning to a job offer. Supports configurable forms, grouped submissions, answers, scheduled reminders,
 and realtime `reminder.due` delivery.
 
 ## Stack
@@ -154,3 +154,9 @@ poetry run python scripts/export_openapi.py
   separate scheduler is deployed.
 - Configure SMTP and `PUSH_WEBHOOK_URL` for external notification delivery.
 - Request logs include `x-request-id`; keep `SQLALCHEMY_ECHO=false` outside debugging.
+
+## Project identity
+
+- Backend: https://github.com/anomaly51/find-offer-fast-backend
+- Android: https://github.com/anomaly51/find-offer-fast-android
+- Existing deployment IDs (`pingme-backend`), registry paths, secret references, domains, and browser token storage keys are retained for compatibility with the running installation.

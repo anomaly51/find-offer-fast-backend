@@ -44,24 +44,24 @@ def send_email(to_email: str, subject: str, body: str) -> None:
 def send_email_verification_code(email: str, code: str) -> None:
     send_email(
         email,
-        "PingMe email verification code",
-        f"Your PingMe verification code is: {code}\n\nIt expires in 15 minutes.",
+        "Find Offer Fast email verification code",
+        f"Your Find Offer Fast verification code is: {code}\n\nIt expires in 15 minutes.",
     )
 
 
 def send_password_reset_code(email: str, code: str) -> None:
     send_email(
         email,
-        "PingMe password reset code",
-        f"Your PingMe password reset code is: {code}\n\nIt expires in 15 minutes.",
+        "Find Offer Fast password reset code",
+        f"Your Find Offer Fast password reset code is: {code}\n\nIt expires in 15 minutes.",
     )
 
 
 def send_reminder_notification(email: str, title: str) -> None:
     send_email(
         email,
-        f"PingMe reminder: {title}",
-        f"Reminder due: {title}\n\nOpen PingMe to complete, skip, or cancel it.",
+        f"Find Offer Fast reminder: {title}",
+        f"Reminder due: {title}\n\nOpen Find Offer Fast to complete, skip, or cancel it.",
     )
 
 

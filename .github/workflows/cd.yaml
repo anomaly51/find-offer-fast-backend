@@ -14,6 +14,6 @@ jobs:
     uses: anomaly51/github-actions-toolkit/.github/workflows/harbor-argocd-app.yml@main
     with:
       app-name: pingme-backend
-      notification-title: PingMe Backend
+      notification-title: Find Offer Fast Backend
       image-repository: harbor.api-api-api.com/pingme/backend
     secrets: inherit

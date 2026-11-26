@@ -42,9 +42,9 @@ python_version = "3.12"
 strict = true
 ignore_missing_imports = true
 [project]
-name = "project-root"
+name = "find-offer-fast-backend"
 version = "0.1.0"
-description = ""
+description = "Group learning and progress tracking for IT careers"
 authors = [
     {name = "Kostya",email = "fesenko.kostya576@gmail.com"}
 ]

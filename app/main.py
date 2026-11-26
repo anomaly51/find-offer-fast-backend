@@ -66,8 +66,10 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 
 fastapi_app = FastAPI(
-    title="ping me Project API",
-    description="FastAPI with PostgreSQL database.",
+    title="Find Offer Fast API",
+    description=(
+        "Group learning and progress tracking for IT careers, from learning to a job offer."
+    ),
     version="0.1.0",
     lifespan=lifespan,
 )
